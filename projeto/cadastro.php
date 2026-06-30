@@ -16,8 +16,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $stmt_check->store_result(); // Armazena o resultado para poder contar as linhas
 
     if ($stmt_check->num_rows > 0) {
-        // Se encontrou alguma linha, o e-mail já existe
-        $_SESSION['mensagem'] = "Erro: E-mail já cadastrado!";
+        $_SESSION['mensagem'] = "<span class='msg-erro'>Erro: E-mail já cadastrado!</span>";
         $stmt_check->close();
         header("Location: " . $_SERVER['PHP_SELF']);
         exit();
@@ -30,13 +29,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $stmt->bind_param("ssis", $nome, $email, $telefone, $data_nascimento);
 
     if ($stmt->execute()) {
-
-        $_SESSION['mensagem'] = "Cliente cadastrado com sucesso!"; // Armazena a mensagem de sucesso na sessão para ser exibida após o redirecionamento
-        header("Location: " . $_SERVER['PHP_SELF']);               // Redireciona o usuário para a mesma página, limpando os dados do formulário (evita reenvio com F5)
+        // Envelopado na classe de sucesso
+        $_SESSION['mensagem'] = "<span class='msg-sucesso'>Cliente cadastrado com sucesso!</span>";
+        header("Location: " . $_SERVER['PHP_SELF']);
         exit();
     } else {
-        $_SESSION['mensagem'] = "Erro ao cadastrar: " . $stmt->error; // Armazena a mensagem de erro na sessão, concatenando com o erro retornado pelo banco
-        header("Location: " . $_SERVER['PHP_SELF']);                  // Redireciona o usuário de volta para a mesma página
+        // Envelopado na classe de erro concatenando o erro do banco
+        $_SESSION['mensagem'] = "<span class='msg-erro'>Erro ao cadastrar: " . $stmt->error . "</span>";
+        header("Location: " . $_SERVER['PHP_SELF']);
         exit();
     }
 }
