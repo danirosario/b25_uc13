@@ -1,0 +1,44 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+    background-color: #f4f4f4;
+    color: #333;
+    line-height: 1.6;
+    padding: 20px;
+}
+
+h1 {
+    margin-bottom: 8px;
+    color: #444;
+}
+
+p {
+    margin-bottom: 10px;
+    font-size: 1rem;
+    color: #555; 
+}
+
+table {
+    border-collapse: collapse;
+    width: 50%;
+}
+
+th {
+    padding: 10px;
+    border: 1px solid #bdbdbd;
+    background-color: #eeeeee;
+    text-align: center;
+}
+
+td {
+    padding: 10px;
+    border: 1px solid #bdbdbd;
+    background-color: #fafafa;
+    text-align: center;
+    vertical-align: middle;
+}
