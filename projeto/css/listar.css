@@ -20,7 +20,7 @@ h1 {
 p {
     margin-bottom: 10px;
     font-size: 1rem;
-    color: #555; 
+    color: #555;
 }
 
 table {
@@ -38,7 +38,29 @@ th {
 td {
     padding: 10px;
     border: 1px solid #bdbdbd;
-    background-color: #fafafa;
-    text-align: center;
-    vertical-align: middle;
+    background-color: #fdfdfd;
+}
+
+td a {
+    text-decoration: none;
+    padding: 5px 10px;
+    border-radius: 3px;
+}
+
+#editar-link {
+    background-color: #1707ff;
+    color: #fff;
+}
+
+#editar-link:hover {
+    background-color: #0b05b3;
+}
+
+#deletar-link {
+    background-color: #dc3545;
+    color: #fff;
+}
+
+#deletar-link:hover {
+    background-color: #a71d2a;
 }
