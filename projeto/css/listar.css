@@ -24,7 +24,7 @@ p {
 }
 
 table {
-    border-collapse: collapse;
+    border-collapse: collapse; 
     width: 50%;
 }
 
@@ -39,6 +39,16 @@ td {
     padding: 10px;
     border: 1px solid #bdbdbd;
     background-color: #fdfdfd;
+} 
+
+td.acoes {
+    text-align: center;
+}
+
+td.acoes a {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
 }
 
 td a {

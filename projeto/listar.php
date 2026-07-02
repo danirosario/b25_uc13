@@ -75,7 +75,7 @@ $rows = $result->num_rows;
                         <td><?php echo $telefone;      ?></td> 
                         <td><?php echo $dataNascimento;?></td> 
                         <td><?php echo $dataCadastro;  ?></td> 
-                        <td>
+                        <td class="acoes">
                             <a href="editar.php?id=<?php echo $row["id"];  ?>" id="editar-link">Editar</a> |
                             <a href="deletar.php?id=<?php echo $row["id"]; ?>" id="deletar-link" 
                                 onclick="return confirm('Tem certeza que deseja excluir este cliente?');">Excluir</a>
