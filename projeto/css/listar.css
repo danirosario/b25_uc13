@@ -9,6 +9,10 @@ body {
     background-color: #f4f4f4;
     color: #333;
     line-height: 1.6;
+
+}
+
+.container {
     padding: 20px;
 }
 
@@ -39,6 +43,7 @@ td {
     padding: 10px;
     border: 1px solid #bdbdbd;
     background-color: #fdfdfd;
+    align-items: center;
 } 
 
 td.acoes {
