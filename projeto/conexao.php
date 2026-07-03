@@ -2,7 +2,7 @@
 $server = "localhost"; 
 $user = "root"; 
 $pass = ""; 
-$db = "db_cliente_novo"; 
+$db = "db_clientes"; 
 
 $conn = mysqli_connect($server, $user, $pass, $db); 
 
