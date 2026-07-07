@@ -79,8 +79,12 @@ $rows = $result->num_rows;
                             <td><?php echo $dataCadastro; ?></td>
                             <td class="acoes">
                                 <a href="editar.php?id=<?php echo $row["id"]; ?>" id="editar-link">Editar</a> |
-                                <a href="deletar.php?id=<?php echo $row["id"]; ?>" id="deletar-link"
-                                    onclick="return confirm('Tem certeza que deseja excluir este cliente?');">Excluir</a>
+                                <!-- FORMULÁRIO SEGURO COM POST PARA EXCLUSÃO -->
+                                <form action="deletar.php" method="POST" class="form-deletar"
+                                    onsubmit="return confirm('Tem certeza que deseja excluir este cliente?');">
+                                    <input type="hidden" name="id" value="<?php echo $row["id"]; ?>">
+                                    <button type="submit" class="btn-deletar">Excluir</button>
+                                </form>
                             </td>
                         </tr>
                         <?php

@@ -71,11 +71,20 @@ td a {
     background-color: #0b05b3;
 }
 
-#deletar-link {
+.form-deletar {
+    display: inline-block;
+    margin: 0;
+}
+
+.btn-deletar {
+    border: none;
+    border-radius: 3px;
+    padding: 7px 10px;
     background-color: #dc3545;
+    font-size: 1rem;
     color: #fff;
 }
 
-#deletar-link:hover {
+.btn-deletar:hover {
     background-color: #a71d2a;
 }
