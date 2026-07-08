@@ -1,4 +1,5 @@
 <?php
+session_start();
 require_once("conexao.php");
 
 if ($_SERVER['REQUEST_METHOD'] == "POST") {
@@ -12,14 +13,24 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
     $stmt = $conn->prepare("DELETE FROM clientes WHERE id = ?");
     $stmt->bind_param("i", $id);
 
-    // EXECUTAR O COMANDO SQL PARA DELETAR O CLIENTE
+    // Executar o comando SQL e validar o resultado
     if ($stmt->execute() === TRUE) {
-        echo "<span>DELETADO COM SUCESSO! </span><br>";
-        echo "<a href='listar.php'>VOLTAR PARA A LISTA</a>";
+        // Define a mensagem de sucesso que será lida pelo listar.php
+        $_SESSION['mostrar_popup'] = "Deletado com sucesso!";
     } else {
-        echo "<span>ERRO AO DELETAR: " . $stmt->error . "</span>";
+        // Define a mensagem de erro detalhada caso algo dê errado no banco
+        $_SESSION['mostrar_popup'] = "ERRO AO DELETAR: " . addslashes($stmt->error);
     }
+
+    // Fecha o statement para liberar memória
+    $stmt->close();
+
+    // Redireciona de volta para a página de listagem
+    header("Location: listar.php");
+    exit();
+
 } else {
-    header("Location:listar.php");
+    // Se tentarem acessar o arquivo diretamente via URL (GET), redireciona imediatamente
+    header("Location: listar.php");
     exit();
 }

@@ -1,4 +1,5 @@
 <?php
+session_start();
 require_once("conexao.php");
 include("menu.php");
 
@@ -101,6 +102,16 @@ $rows = $result->num_rows;
 
         </table>
     </div>
+    <!-- 2. CÓDIGO DO POP-UP INJETADO ANTES DE FECHAR O CORPO DA PÁGINA -->
+    <?php
+    if (isset($_SESSION['mostrar_popup'])) {
+        $mensagem = $_SESSION['mostrar_popup'];
+        echo "<script type='text/javascript'>alert('$mensagem');</script>";
+
+        // Remove a variável para que o pop-up não reapareça ao atualizar a página (F5)
+        unset($_SESSION['mostrar_popup']);
+    }
+    ?>
 </body>
 
 </html>
