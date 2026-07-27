@@ -1,42 +1,55 @@
-<?php
-session_start();
+<?php 
+session_start();  
+require_once("conexao.php");  
 
-require_once("conexao.php");
+if ($_SERVER["REQUEST_METHOD"] == "POST") {     
+    $nome = $_POST["nome"];     
+    $email = $_POST["email"];     
+    $senha = $_POST["senha"];     
+    $telefone = $_POST["telefone"];     
+    $data_nascimento = $_POST["data_nascimento"];      
 
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $nome = $_POST["nome"];
-    $email = $_POST["email"];
-    $telefone = $_POST["telefone"];
-    $data_nascimento = $_POST["data_nascimento"];
+    // VERIFICAR SE OS DADOS JA EXISTEM     
+    $stmt_check = $conn->prepare("SELECT id FROM clientes WHERE email = ?");     
+    $stmt_check->bind_param("s", $email);     
+    $stmt_check->execute();     
+    $stmt_check->store_result();      
 
-    // VERIFICAR SE OS DADOS JA EXISTEM
-    $stmt_check = $conn->prepare("SELECT id FROM clientes WHERE email = ?");
-    $stmt_check->bind_param("s", $email);
-    $stmt_check->execute();
-    $stmt_check->store_result();
-
-    if ($stmt_check->num_rows > 0) {
-        $_SESSION['mensagem'] = "<span class='msg-erro'>Erro: E-mail já cadastrado!</span>";
-        $stmt_check->close();
-        header("Location: " . $_SERVER['PHP_SELF']);
-        exit();
-    }
+    if ($stmt_check->num_rows > 0) {         
+        $_SESSION['mensagem'] = "<span class='msg-erro'>Erro: E-mail já cadastrado!</span>";         
+        $stmt_check->close();         
+        header("Location: " . $_SERVER['PHP_SELF']);         
+        exit();     
+    }     
     $stmt_check->close();
 
-    // INSERIR OS DADOS NO BANCO
-    $stmt = $conn->prepare("INSERT INTO clientes (nome, email, telefone, nascimento, data_cadastro) VALUES (?, ?, ?, ?, NOW())");
-    $stmt->bind_param("ssis", $nome, $email, $telefone, $data_nascimento);
+    // VERIFICAR SE A SENHA É FORTE O SUFICIENTE
+    $passwordPattern = "/^(?=.*[A-Z])(?=.*\d)(?=.*[#@$!%*?&])[A-Za-z\d#@$!%*?&]{8,}$/";          
 
-    if ($stmt->execute()) {
-        $_SESSION['mensagem'] = "<span class='msg-sucesso'>Cliente cadastrado com sucesso!</span>";
+    if (!preg_match($passwordPattern, $senha)) {             
+        $_SESSION['mensagem'] = "<span class='msg-erro'>A senha deve conter pelo menos 8 caracteres, uma letra maiúscula, um número e um caractere especial.</span>";         
         header("Location: " . $_SERVER['PHP_SELF']);
         exit();
-    } else {
-        $_SESSION['mensagem'] = "<span class='msg-erro'>Erro ao cadastrar: " . $stmt->error . "</span>";
-        header("Location: " . $_SERVER['PHP_SELF']);
+    } else {             
+        // Aplica o hash logo após passar na validação da Regex             
+        $hashedPassword = password_hash($senha, PASSWORD_BCRYPT);      
+
+        // INSERIR OS DADOS NO BANCO (incluindo senha)     
+        $stmt = $conn->prepare("INSERT INTO clientes (nome, email, senha, telefone, nascimento, data_cadastro) VALUES (?, ?, ?, ?, ?, NOW())");     
+        $stmt->bind_param("sssss", $nome, $email, $hashedPassword, $telefone, $data_nascimento);      
+
+        if ($stmt->execute()) {         
+            $_SESSION['mensagem'] = "<span class='msg-sucesso'>Cliente cadastrado com sucesso!</span>";         
+        } else {         
+            $_SESSION['mensagem'] = "<span class='msg-erro'>Erro ao cadastrar: " . $stmt->error . "</span>";         
+        } 
+        
+        $stmt->close();
+        header("Location: " . $_SERVER['PHP_SELF']);         
         exit();
-    }
+    } 
 }
+
 ?>
 
 <!DOCTYPE html>
@@ -70,6 +83,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 <input type="text" name="nome" required>
                 <label>E-mail: </label>
                 <input type="email" name="email" required>
+                <label>Senha: </label>
+                <input type="password" name="senha" required>
                 <label>Telefone: </label>
                 <input type="number" name="telefone" required>
                 <label>Data de Nascimento: </label>
