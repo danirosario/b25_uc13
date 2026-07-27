@@ -59,6 +59,7 @@ body {
 /* Estilização de todos os Inputs (Texto, Email, Número e Data) */
 .container-form input[type="text"],
 .container-form input[type="email"],
+.container-form input[type="password"],
 .container-form input[type="number"],
 .container-form input[type="date"] {
     width: 100%;
