@@ -7,7 +7,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $email = $_POST["email"];
     $senha = $_POST["senha"];
     $telefone = $_POST["telefone"];
+    $nivel = $_POST["nivel"] ?? 'cliente';
     $data_nascimento = $_POST["data_nascimento"];
+
+    // 1. VALIDAÇÃO DE SEGURANÇA DO RADIO BUTTON (Whitelisting)
+    $niveis_permitidos = ['cliente', 'admin'];
+    if (!in_array($nivel, $niveis_permitidos)) {
+        $_SESSION['mensagem'] = "<span class='msg-erro'>Erro: Nível de acesso inválido!</span>";
+        header("Location: " . $_SERVER['PHP_SELF']);
+        exit();
+    }
 
     // VERIFICAR SE OS DADOS JA EXISTEM     
     $stmt_check = $conn->prepare("SELECT id FROM clientes WHERE email = ?");
@@ -42,8 +51,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $hashedPassword = password_hash($senha, PASSWORD_BCRYPT);
 
         // INSERIR OS DADOS NO BANCO (incluindo senha)     
-        $stmt = $conn->prepare("INSERT INTO clientes (nome, email, senha, telefone, nascimento, data_cadastro) VALUES (?, ?, ?, ?, ?, NOW())");
-        $stmt->bind_param("sssss", $nome, $email, $hashedPassword, $telefone, $data_nascimento);
+        $stmt = $conn->prepare("INSERT INTO clientes (nome, email, senha, telefone, nascimento, nivel, data_cadastro) VALUES (?, ?, ?, ?, ?, ?, NOW())");
+        $stmt->bind_param("ssssss", $nome, $email, $hashedPassword, $telefone, $data_nascimento, $nivel);
 
         if ($stmt->execute()) {
             $_SESSION['mensagem'] = "<span class='msg-sucesso'>Cliente cadastrado com sucesso!</span>";
@@ -93,9 +102,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 <label>Senha: </label>
                 <input type="password" name="senha" required>
                 <label>Telefone: </label>
-                <input type="number" name="telefone" required>
+                <input type="text" name="telefone" required>
                 <label>Data de Nascimento: </label>
                 <input type="date" name="data_nascimento" required>
+                <label>Nível de Acesso: </label>
+                <input type="radio" id="admin" name="nivel" value="admin">
+                <label for="admin">Admin</label>
+                <input type="radio" id="cliente" name="nivel" value="cliente" checked>
+                <label for="cliente">Cliente</label>
                 <button class="btn-cadastro" type="submit">Cadastrar</button>
             </form>
         </div>
@@ -103,3 +117,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 </body>
 
 </html>
+
+<!--
+
+senhas cadastradas:
+dani - Artemis1mapraga@
+ni - niGracinhas123@
