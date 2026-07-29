@@ -17,6 +17,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         header("Location: " . $_SERVER['PHP_SELF']);
         exit();
     }
+    //in_array no PHP serve para verificar se um valor específico existe dentro de um array, 
+    // retornando true (verdadeiro) se achar o item ou false (falso) caso contrário.
 
     // VERIFICAR SE OS DADOS JA EXISTEM     
     $stmt_check = $conn->prepare("SELECT id FROM clientes WHERE email = ?");
@@ -42,13 +44,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // $ -> Fim
     $passwordPattern = "/^(?=.*[A-Z])(?=.*\d)(?=.*[#@$!%*?&])[A-Za-z\d#@$!%*?&]{8,}$/";
 
+    //preg_match é uma função da linguagem PHP que procura por um padrão dentro de um texto usando expressões regulares. 
+    // Ela serve para verificar se um texto combina com uma regra específica, retornando 1 se encontrar o padrão, 0 se não encontrar, ou false se houver algum erro.
+
     if (!preg_match($passwordPattern, $senha)) {
         $_SESSION['mensagem'] = "<span class='msg-erro'>A senha deve conter pelo menos 8 caracteres, uma letra maiúscula, um número e um caractere especial.</span>";
         header("Location: " . $_SERVER['PHP_SELF']);
         exit();
     } else {
         // Aplica o hash logo após passar na validação da Regex             
-        $hashedPassword = password_hash($senha, PASSWORD_BCRYPT);
+        $hashedPassword = password_hash($senha, PASSWORD_DEFAULT);
 
         // INSERIR OS DADOS NO BANCO (incluindo senha)     
         $stmt = $conn->prepare("INSERT INTO clientes (nome, email, senha, telefone, nascimento, nivel, data_cadastro) VALUES (?, ?, ?, ?, ?, ?, NOW())");
