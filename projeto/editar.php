@@ -16,30 +16,43 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $id = intval($_POST["id"]);
     $nome = $_POST["nome"];
     $email = $_POST["email"];
+    $senha = $_POST["senha"];
     $telefone = $_POST["telefone"];
     $data_nascimento = $_POST["data_nascimento"];
 
-    // PREPARAR O COMANDO SQL PARA ATUALIZAÇÃO DOS DADOS
-    $stmt = $conn->prepare("UPDATE clientes SET nome = ?, email = ?, telefone = ?, nascimento = ? WHERE id = ?");
+    $passwordPattern = "/^(?=.*[A-Z])(?=.*\d)(?=.*[#@$!%*?&])[A-Za-z\d#@$!%*?&]{8,}$/";
 
-    // VINCULANDO OS PARAMETROS (s = string, i = inteiro)
-    $stmt->bind_param("ssisi", $nome, $email, $telefone, $data_nascimento, $id);
+    //preg_match é uma função da linguagem PHP que procura por um padrão dentro de um texto usando expressões regulares. 
+    // Ela serve para verificar se um texto combina com uma regra específica, retornando 1 se encontrar o padrão, 0 se não encontrar, ou false se houver algum erro.
 
-    // EXECUTAR O SQL
-    if ($stmt->execute()) {
-        $_SESSION['mensagem'] = "<span class='msg-sucesso'>Edição realizada com sucesso!</span>";
-        header("Location: editar.php?id=" . $id);
+    if (!preg_match($passwordPattern, $senha)) {
+        $_SESSION['mensagem'] = "<span class='msg-erro'>A senha deve conter pelo menos 8 caracteres, uma letra maiúscula, um número e um caractere especial.</span>";
+        header("Location: " . $_SERVER['PHP_SELF']);
         exit();
     } else {
-        $_SESSION['mensagem'] = "<span class='msg-erro'>Erro ao editar: " . $stmt->error . "</span>";
-    }
+        // Aplica o hash logo após passar na validação da Regex             
+        $hashedPassword = password_hash($senha, PASSWORD_DEFAULT);
 
-    // FECHAR A CONEXÃO
-    $stmt->close();
+        // ATUALIZAR OS DADOS NO BANCO     
+        $stmt = $conn->prepare("UPDATE clientes SET nome = ?, email = ?, senha = ?, telefone = ?, nascimento = ?, data_cadastro = NOW() WHERE id = ?");
+
+        $stmt->bind_param("sssssi", $nome, $email, $hashedPassword, $telefone, $data_nascimento, $id_cliente);
+
+        if ($stmt->execute()) {
+            $_SESSION['mensagem'] = "<span class='msg-sucesso'>Cliente atualizado com sucesso!</span>";
+        } else {
+            $_SESSION['mensagem'] = "<span class='msg-erro'>Erro ao atualizar: " . $stmt->error . "</span>";
+        }
+
+        $stmt->close();
+        header("Location: " . $_SERVER['PHP_SELF']);
+        exit();
+
+    }
 }
 
 // BUSCAR OS DADOS DO CLIENTE NO BANCO VIA ID (Executado após o POST para trazer os dados atualizados)
-$stmt = $conn->prepare("SELECT nome, email, telefone, nascimento FROM clientes WHERE id = ?");
+$stmt = $conn->prepare("SELECT nome, email, senha, telefone, nascimento FROM clientes WHERE id = ?");
 $stmt->bind_param("i", $id);
 $stmt->execute();
 $result = $stmt->get_result();
@@ -88,6 +101,9 @@ if (!$cliente) {
                 <label>E-mail: </label>
                 <input type="email" name="email"
                     value="<?php echo htmlspecialchars($cliente['email'], ENT_QUOTES, 'UTF-8'); ?>" required>
+
+                <label>Senha: </label>
+                <input type="password" name="senha">
 
                 <label>Telefone: </label>
                 <input type="text" name="telefone"
