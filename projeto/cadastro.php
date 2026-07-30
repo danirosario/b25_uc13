@@ -7,11 +7,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $email = $_POST["email"];
     $senha = $_POST["senha"];
     $telefone = $_POST["telefone"];
-    $nivel = $_POST["nivel"] ?? 'cliente';
+    $nivel = $_POST["nivel"] ?? 'usuario';
     $data_nascimento = $_POST["data_nascimento"];
 
     // 1. VALIDAÇÃO DE SEGURANÇA DO RADIO BUTTON (Whitelisting)
-    $niveis_permitidos = ['cliente', 'admin'];
+    $niveis_permitidos = ['usuario', 'admin'];
     if (!in_array($nivel, $niveis_permitidos)) {
         $_SESSION['mensagem'] = "<span class='msg-erro'>Erro: Nível de acesso inválido!</span>";
         header("Location: " . $_SERVER['PHP_SELF']);
@@ -111,10 +111,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 <label>Data de Nascimento: </label>
                 <input type="date" name="data_nascimento" required>
                 <label>Nível de Acesso: </label>
-                <input type="radio" id="admin" name="nivel" value="admin">
-                <label for="admin">Admin</label>
-                <input type="radio" id="cliente" name="nivel" value="cliente" checked>
-                <label for="cliente">Cliente</label>
+                <div class="nivel">
+                    <div class="opcao">
+                        <input type="radio" id="admin" name="nivel" value="admin">Administrador
+                    </div>
+                    <div class="opcao">
+                        <input type="radio" id="userComum" name="nivel" value="usuario" checked>Usuário
+                    </div>
+                </div>
                 <button class="btn-cadastro" type="submit">Cadastrar</button>
             </form>
         </div>

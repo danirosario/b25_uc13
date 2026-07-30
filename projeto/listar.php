@@ -86,7 +86,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["nivel"])) {
                             <td class="acoes">
                                 <a href="editar.php?id=<?php echo $row["id"]; ?>" id="editar-link">Editar</a> |
 
-                                <?php if ($nivel == "admin"): ?>
+                                <!-- Definir nivel de acesso: desabilitar a função de excluir se não for administrador -->
+                                <?php if ($nivel === "admin"): ?>
                                     <form action="deletar.php" method="POST" class="form-deletar"
                                         onsubmit="return confirm('Tem certeza que deseja excluir este cliente?');"
                                         style="display:inline;">

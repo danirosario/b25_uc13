@@ -79,6 +79,19 @@ body {
     box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.2);
 }
 
+.nivel {     
+    display: flex;     
+    align-items: center;     
+    justify-content: space-between; 
+}
+
+.opcao {
+    display: flex;
+    align-items: center;
+    gap: 8px; 
+}
+
+
 /* Botão de Enviar */
 .container-form .btn-save {
     width: 100%;
