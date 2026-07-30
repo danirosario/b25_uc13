@@ -126,5 +126,5 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 <!--
 
 senhas cadastradas:
-dani - Artemis1mapraga@
+dani - Novasenha123@
 ni - niGracinhas123@

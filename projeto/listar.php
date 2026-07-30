@@ -8,6 +8,11 @@ $result = $conn->query($sql) or die("Erro ao executar a consulta: " . $conn->err
 
 $rows = $result->num_rows;
 
+$nivel = "";
+
+if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["nivel"])) {
+    $nivel = $_POST["nivel"];
+}
 ?>
 
 <!DOCTYPE html>
@@ -80,12 +85,17 @@ $rows = $result->num_rows;
                             <td><?php echo $dataCadastro; ?></td>
                             <td class="acoes">
                                 <a href="editar.php?id=<?php echo $row["id"]; ?>" id="editar-link">Editar</a> |
-                                <!-- FORMULÁRIO SEGURO COM POST PARA EXCLUSÃO -->
-                                <form action="deletar.php" method="POST" class="form-deletar"
-                                    onsubmit="return confirm('Tem certeza que deseja excluir este cliente?');">
-                                    <input type="hidden" name="id" value="<?php echo $row["id"]; ?>">
-                                    <button type="submit" class="btn-deletar">Excluir</button>
-                                </form>
+
+                                <?php if ($nivel == "admin"): ?>
+                                    <form action="deletar.php" method="POST" class="form-deletar"
+                                        onsubmit="return confirm('Tem certeza que deseja excluir este cliente?');"
+                                        style="display:inline;">
+                                        <input type="hidden" name="id" value="<?php echo $row["id"]; ?>">
+                                        <button type="submit" class="btn-deletar">Excluir</button>
+                                    </form>
+                                <?php else: ?>
+                                    <button type="submit" class="btn-deletar" disabled>Excluir</button>
+                                <?php endif; ?>
                             </td>
                         </tr>
                         <?php
