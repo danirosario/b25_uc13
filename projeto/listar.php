@@ -39,6 +39,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["nivel"])) {
                     <th>Data de Nascimento</th>
                     <th>Nível</th>
                     <th>Data de Cadastro</th>
+                    <th>Última Alteração</th>
                     <th>Ações</th>
                 </tr>
             </thead>
@@ -76,6 +77,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["nivel"])) {
                         $dataCadastro = !empty($row["data_cadastro"])
                             ? (new DateTime($row["data_cadastro"]))->format('d/m/Y H:i')
                             : 'Não informada';
+
+                        // Formata a data de última alteração com hora apenas se ela não estiver vazia
+                        $ultimaAlteracao = !empty($row["ultima_alteracao"])
+                            ? (new DateTime($row["ultima_alteracao"]))->format('d/m/Y H:i')
+                            : 'Não informada';
                         ?>
 
 
@@ -87,6 +93,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["nivel"])) {
                             <td><?php echo $dataNascimento; ?></td>
                             <td><?php echo $row["nivel"]; ?></td>
                             <td><?php echo $dataCadastro; ?></td>
+                            <td><?php echo $ultimaAlteracao; ?></td>
                             <td class="acoes">
                                 <a href="editar.php?id=<?php echo $row["id"]; ?>" id="editar-link">Editar</a> |
 
