@@ -37,6 +37,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["nivel"])) {
                     <th>Email</th>
                     <th>Telefone</th>
                     <th>Data de Nascimento</th>
+                    <th>Nível</th>
                     <th>Data de Cadastro</th>
                     <th>Ações</th>
                 </tr>
@@ -76,18 +77,20 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["nivel"])) {
                             ? (new DateTime($row["data_cadastro"]))->format('d/m/Y H:i')
                             : 'Não informada';
                         ?>
+
+
                         <tr>
                             <td><?php echo $row["id"]; ?></td>
                             <td><?php echo $row["nome"]; ?></td>
                             <td><?php echo $row["email"]; ?></td>
                             <td><?php echo $telefone; ?></td>
                             <td><?php echo $dataNascimento; ?></td>
+                            <td><?php echo $row["nivel"]; ?></td>
                             <td><?php echo $dataCadastro; ?></td>
                             <td class="acoes">
                                 <a href="editar.php?id=<?php echo $row["id"]; ?>" id="editar-link">Editar</a> |
 
-                                <!-- Definir nivel de acesso: desabilitar a função de excluir se não for administrador -->
-                                <?php if ($nivel === "admin"): ?>
+                                <?php if (isset($_SESSION['nivel']) && $_SESSION['nivel'] == "admin"): ?>
                                     <form action="deletar.php" method="POST" class="form-deletar"
                                         onsubmit="return confirm('Tem certeza que deseja excluir este cliente?');"
                                         style="display:inline;">
@@ -95,7 +98,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["nivel"])) {
                                         <button type="submit" class="btn-deletar">Excluir</button>
                                     </form>
                                 <?php else: ?>
-                                    <button type="submit" class="btn-deletar" disabled>Excluir</button>
+                                    <button type="button" class="btn-deletar" disabled
+                                        title="Apenas administradores podem excluir">Excluir</button>
                                 <?php endif; ?>
                             </td>
                         </tr>

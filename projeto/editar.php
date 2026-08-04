@@ -18,6 +18,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $email = $_POST["email"];
     $senha = $_POST["senha"];
     $telefone = $_POST["telefone"];
+    $nivel = $_POST["nivel"] ?? 'usuario';
     $data_nascimento = $_POST["data_nascimento"];
 
     $passwordPattern = "/^(?=.*[A-Z])(?=.*\d)(?=.*[#@$!%*?&])[A-Za-z\d#@$!%*?&]{8,}$/";
@@ -34,9 +35,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $hashedPassword = password_hash($senha, PASSWORD_DEFAULT);
 
         // ATUALIZAR OS DADOS NO BANCO     
-        $stmt = $conn->prepare("UPDATE clientes SET nome = ?, email = ?, senha = ?, telefone = ?, nascimento = ?, data_cadastro = NOW() WHERE id = ?");
+        $stmt = $conn->prepare("UPDATE clientes SET nome = ?, email = ?, senha = ?, telefone = ?, nivel = ?, nascimento = ?, ultima_alteracao = NOW() WHERE id = ?");
 
-        $stmt->bind_param("sssssi", $nome, $email, $hashedPassword, $telefone, $data_nascimento, $id_cliente);
+        $stmt->bind_param("ssssssi", $nome, $email, $hashedPassword, $telefone, $nivel, $data_nascimento, $id_cliente);
 
         if ($stmt->execute()) {
             $_SESSION['mensagem'] = "<span class='msg-sucesso'>Cliente atualizado com sucesso!</span>";
@@ -52,7 +53,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 }
 
 // BUSCAR OS DADOS DO CLIENTE NO BANCO VIA ID (Executado após o POST para trazer os dados atualizados)
-$stmt = $conn->prepare("SELECT nome, email, senha, telefone, nascimento FROM clientes WHERE id = ?");
+$stmt = $conn->prepare("SELECT nome, email, senha, telefone, nivel, nascimento FROM clientes WHERE id = ?");
 $stmt->bind_param("i", $id);
 $stmt->execute();
 $result = $stmt->get_result();
@@ -112,6 +113,16 @@ if (!$cliente) {
                 <label>Data de Nascimento: </label>
                 <input type="date" name="data_nascimento"
                     value="<?php echo htmlspecialchars($cliente['nascimento'], ENT_QUOTES, 'UTF-8'); ?>" required>
+
+                <label>Nível de Acesso: </label>
+                <div class="nivel">
+                    <div class="opcao">
+                        <input type="radio" id="admin" name="nivel" value="admin" <?php echo $cliente['nivel'] == "admin" ? 'checked' : ""; ?>>Administrador
+                    </div>
+                    <div class="opcao">
+                        <input type="radio" id="userComum" name="nivel" value="usuario"  <?php echo $cliente['nivel'] == "usuario" ? 'checked' : ""; ?> >Usuário
+                    </div>
+                </div>
 
                 <button class="btn-save" type="submit">Salvar</button>
                 <button class="btn-cancel" type="button" onclick="window.location.href='listar.php'">Cancelar</button>
