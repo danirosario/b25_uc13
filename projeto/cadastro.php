@@ -128,7 +128,4 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 </html>
 
 <!--
-
-senhas cadastradas:
-dani - Novasenha123@
-ni - niGracinhas123@
+senha: P@ssw0rd
