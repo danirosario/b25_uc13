@@ -29,6 +29,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["nivel"])) {
     <div class="container">
         <h1>Lista de clientes</h1>
         <p>Clientes cadastrados: <?php echo $rows; ?></p>
+        <p>Usuário: <?php echo isset($_SESSION["user_nome"]) ? $_SESSION["user_nome"] : "Não logado"; ?> </p>
         <table>
             <thead>
                 <tr>

@@ -26,3 +26,8 @@
 .nav-list a:hover {
     background-color: #333333;
 }
+
+.login-link {
+    margin-left: auto;
+    justify-content: left;
+}
