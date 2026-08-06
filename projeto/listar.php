@@ -115,8 +115,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["nivel"])) {
                 } else {
                     ?>
                     <tr>
-                        <td colspan="7">Nenhum cliente cadastrado.</td>
+                        <td colspan="9">Nenhum cliente cadastrado.</td>
                     </tr>
+
                     <?php
                 }
                 ?>

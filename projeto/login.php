@@ -1,12 +1,18 @@
-<?php 
+<?php
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
 require_once('conexao.php');
+
+$erro = "";
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $email = $_POST["email"];
     $senha = $_POST["senha"];
 
-    //PREPARA A CONSULTA NO BANCO
-    $stmt = $conn->prepare("SELECT id, nome, email, senha FROM clientes WHERE email = ?");
+    $stmt = $conn->prepare("SELECT id, nome, email, senha, nivel FROM clientes WHERE email = ?");
+
     $stmt->bind_param("s", $email);
     $stmt->execute();
 
@@ -19,15 +25,15 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         if (password_verify($senha, $senha_criptografada)) {
             $_SESSION["user_id"] = $row["id"];
             $_SESSION["user_nome"] = $row["nome"];
+            $_SESSION["nivel"] = $row["nivel"];
 
             header("Location: listar.php");
             exit();
+
         } else {
-            //senha incorreta
             $erro = "Email ou senha inválidos.";
         }
     } else {
-        //email não encontrado
         $erro = "Email ou senha inválidos.";
     }
 
@@ -37,20 +43,34 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/form.css">
     <title>Login</title>
 </head>
-<body>
-    <h1>Login</h1>
 
-    <form action="" method="POST">
-        <label for="email">Email</label>
-        <input type="email" id="email" name="email" required>
-        <label for="senha">Senha</label>
-        <input type="password" id="senha" name="senha" required>
-        <input type="submit" value="Entrar">
-    </form>
+<body>
+    <main class="main-content">
+        <div class="container-form">
+            <h2>Login</h2>
+
+            <?php if (!empty($erro)): ?>
+                <p style="color: red; text-align: center;"><?php echo $erro; ?></p>
+            <?php endif; ?>
+
+            <form action="" method="POST">
+                <label>E-mail: </label>
+                <input type="email" name="email" required>
+                
+                <label>Senha: </label>
+                <input type="password" name="senha" required>
+
+                <button class="btn-cadastro" type="submit">Entrar</button>
+            </form>
+        </div>
+    </main>
 </body>
+
 </html>
